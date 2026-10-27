@@ -1,7 +1,8 @@
-#include <iostream>
+#include <origin/logging/log_source.hpp>
+#include <origin/logging/logging.hpp>
 
 int main()
 {
-    std::cout << "Hello world!" << std::endl;
+    origin::logging::error(LOG_SRC_LOCAL, "Hello world!");
     return 0;
 }
