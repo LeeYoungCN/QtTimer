@@ -28,6 +28,7 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS:                 ${CMAKE_EXE_LINKER_FLAGS
 message(STATUS "CMAKE_BINARY_DIR:                       ${CMAKE_BINARY_DIR}")
 message(STATUS "CMAKE_INSTALL_PREFIX:                   ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "CMAKE_THIRD_PARTY_PATH                  ${CMAKE_THIRD_PARTY_PATH}")
+message(STATUS "CMAKE_ORIGIN_PATH                       ${CMAKE_ORIGIN_PATH}")
 
 message(STATUS "CMAKE_SYSTEM_NAME:                      ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR:                 ${CMAKE_SYSTEM_PROCESSOR}")

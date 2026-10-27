@@ -18,8 +18,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/external CACHE PATH "下载依赖库的根目录")
-
 if (MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
@@ -82,12 +80,10 @@ if (ENABLE_ASAN)
     endif()
 endif()
 
-include(${CMAKE_SOURCE_DIR}/cmake/cmake_configure_info.cmake)
-
-include(${CMAKE_SOURCE_DIR}/cmake/content/Origin.cmake)
-if (BUILD_TESTS)
-    enable_testing()
-    add_compile_definitions(ENABLE_TEST)
+if (NOT CMAKE_ORIGIN_PATH)
+    set(CMAKE_ORIGIN_PATH "${CMAKE_SOURCE_DIR}/origin/${CMAKE_PRESET}" CACHE STRING "Default CMAKE_ORIGIN_PATH" FORCE)
 endif()
+
+include(${CMAKE_SOURCE_DIR}/cmake/cmake_configure_info.cmake)
 
 add_subdirectory(src)
