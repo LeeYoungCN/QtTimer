@@ -1,0 +1,88 @@
+{
+    "version": "2.0.0",
+    "type": "shell",
+    "options": {
+        "cwd": "${workspaceFolder}"
+    },
+    "tasks": [
+        {
+            "label": "Clean",
+            "detail": "清理所有build和install文件。",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./cmake_tools.sh",
+            "args": [
+                "--clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake Configure",
+            "detail": "CMake: 配置项目",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./cmake_tools.sh",
+            "args": [
+                "--configure"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake Build",
+            "detail": "CMake: 构建项目",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./cmake_tools.sh",
+            "args": [
+                "--build"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Timer",
+            "detail": "运行 Timer",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./cmake_tools.sh",
+            "args": [
+                "--build",
+                "--run"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Format all files",
+            "detail": "使用clang-format格式化所有文件",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./format_all.sh*",
+            "args": [],
+            "problemMatcher": []
+        },
+        {
+            "label": "git push -f",
+            "detail": "推送代码",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./git_oper.sh push",
+            "args": [],
+            "problemMatcher": []
+        },
+        {
+            "label": "git pull --rebase",
+            "detail": "更新代码",
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "command": "./git_oper.sh pull",
+            "args": [],
+            "problemMatcher": []
+        }
+    ]
+}

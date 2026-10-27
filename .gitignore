@@ -54,3 +54,14 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+buildcache
+install
+build
+.cache
+.idea
+.vs
+out
+*.pyc
+third_party
+external

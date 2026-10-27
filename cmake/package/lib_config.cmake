@@ -1,0 +1,18 @@
+install(DIRECTORY include/
+        DESTINATION include  # 安装路径：${CMAKE_INSTALL_PREFIX}/include
+        COMPONENT ${LIB_NAME}
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+install(TARGETS ${LIB_NAME}
+    EXPORT ${LIB_NAME}_EXPORT
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
+install(EXPORT ${LIB_NAME}_EXPORT
+    FILE Origin-${LIB_NAME}.cmake
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION lib/cmake/${PROJECT_NAME}/components
+)

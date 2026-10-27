@@ -1,0 +1,21 @@
+@PACKAGE_INIT@
+
+# 在这里维护全部合法组件名称（每个lib对应一项）
+set(_@PROJECT_NAME@_all_components @LIB_LIST@)
+
+# 遍历用户请求的组件
+foreach(_comp ${@PROJECT_NAME@_FIND_COMPONENTS})
+    if(NOT _comp IN_LIST _@PROJECT_NAME@_all_components)
+        set(@PROJECT_NAME@_FOUND FALSE)
+        set(@PROJECT_NAME@_NOT_FOUND_MESSAGE
+            "@PROJECT_NAME@: 无效组件 [${_comp}]，可选组件：${_@PROJECT_NAME@_all_components}")
+    endif()
+
+    # 按需引入该组件的 targets 文件
+    include(
+        "${CMAKE_CURRENT_LIST_DIR}/components/@PROJECT_NAME@-${_comp}.cmake"
+        OPTIONAL
+    )
+endforeach()
+
+check_required_components(@PROJECT_NAME@)

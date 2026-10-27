@@ -1,0 +1,47 @@
+include(ProcessorCount)
+ProcessorCount(CPU_CORES)
+
+if(CPU_CORES EQUAL 0)
+  set(CPU_CORES 1)
+endif()
+
+set(CMAKE_CONFIGURE_FILE  ${CMAKE_BINARY_DIR}/cmake_configure.conf)
+set(CMAKE_CONFIGURE_SRC   ${CMAKE_CURRENT_LIST_DIR}/cmake_configure.conf.in)
+
+configure_file(
+    "${CMAKE_CONFIGURE_SRC}"
+    "${CMAKE_CONFIGURE_FILE}"
+)
+
+message(STATUS "CMAKE_CONFIGURE_FILE:                   ${CMAKE_CONFIGURE_FILE}")
+message(STATUS "CMAKE_PRESET:                           ${CMAKE_PRESET}")
+message(STATUS "BUILD_TESTS:                            ${BUILD_TESTS}")
+message(STATUS "CMAKE_TOOLCHAIN_FILE:                   ${CMAKE_TOOLCHAIN_FILE}")
+message(STATUS "CMAKE_BUILD_TYPE:                       ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMAKE_C_FLAGS:                          ${CMAKE_C_FLAGS}")
+message(STATUS "CMAKE_C_FLAGS_DEBUG:                    ${CMAKE_C_FLAGS_DEBUG}")
+message(STATUS "CMAKE_C_FLAGS_RELEASE:                  ${CMAKE_C_FLAGS_RELEASE}")
+message(STATUS "CMAKE_CXX_FLAGS:                        ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS_DEBUG:                  ${CMAKE_CXX_FLAGS_DEBUG}")
+message(STATUS "CMAKE_CXX_FLAGS_RELEASE:                ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "CMAKE_EXE_LINKER_FLAGS:                 ${CMAKE_EXE_LINKER_FLAGS}")
+message(STATUS "CMAKE_BINARY_DIR:                       ${CMAKE_BINARY_DIR}")
+message(STATUS "CMAKE_INSTALL_PREFIX:                   ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "CMAKE_THIRD_PARTY_PATH                  ${CMAKE_THIRD_PARTY_PATH}")
+
+message(STATUS "CMAKE_SYSTEM_NAME:                      ${CMAKE_SYSTEM_NAME}")
+message(STATUS "CMAKE_SYSTEM_PROCESSOR:                 ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "CMAKE_SIZEOF_VOID_P:                    ${CMAKE_SIZEOF_VOID_P}")
+message(STATUS "CPU_CORES:                              ${CPU_CORES}")
+message(STATUS "CMAKE_VERSION:                          ${CMAKE_VERSION}")
+message(STATUS "CMAKE_C_COMPILER:                       ${CMAKE_C_COMPILER}")
+message(STATUS "CMAKE_C_COMPILER_ID:                    ${CMAKE_C_COMPILER_ID}")
+message(STATUS "CMAKE_C_COMPILER_VERSION:               ${CMAKE_C_COMPILER_VERSION}")
+message(STATUS "CMAKE_C_COMPILER_FRONTEND_VARIANT:      ${CMAKE_C_COMPILER_FRONTEND_VARIANT}")
+message(STATUS "CMAKE_CXX_COMPILER:                     ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER_ID:                  ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "CMAKE_CXX_COMPILER_VERSION:             ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "CMAKE_CXX_COMPILER_FRONTEND_VARIANT:    ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
+message(STATUS "CMAKE_GENERATOR:                        ${CMAKE_GENERATOR}")
+message(STATUS "ENV_PARAM_FILE:                         ${ENV_PARAM_FILE}")
+message(STATUS "ENABLE_ASAN:                            ${ENABLE_ASAN}")
