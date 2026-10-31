@@ -1,25 +1,24 @@
-#include <origin/common/debug/debug_logger.h>
-#include <origin/utils/filesystem_utils.h>
-#include <origin/utils/process_utils.h>
-#include <qcontainerfwd.h>
-#include <qcoreapplication.h>
-
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <qcontainerfwd.h>
+#include <qcoreapplication.h>
+
+#include <origin/common/debug/debug_logger.h>
 #include <origin/logging/log_level.hpp>
 #include <origin/logging/log_source.hpp>
 #include <origin/logging/loggers/sync_logger.hpp>
 #include <origin/logging/logging.hpp>
-#include <origin/logging/sinks/basic_file_sink.hpp>
 #include <origin/logging/sinks/daily_file_sink.hpp>
 #include <origin/logging/sinks/rotating_file_sink.hpp>
+#include <origin/utils/filesystem_utils.h>
+#include <origin/utils/process_utils.h>
 
 #include "mainwindow.h"
 
 using namespace origin;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     const auto logDir = filesystem::join_paths({process::get_proc_directory(), "logs"});
 

@@ -1,4 +1,5 @@
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_ORIGIN_PATH}")
+
 find_package(Origin REQUIRED)
 
 set(RUNTIME Timer)
@@ -6,61 +7,40 @@ set(RUNTIME Timer)
 set(QT_PATH "D:/ProgramFiles/Qt/6.12.0/msvc2022_64")
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PATH}")
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
+qt_standard_project_setup()
 
 qt_add_executable(${RUNTIME}
-        MANUAL_FINALIZATION
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
+    WIN32 MACOSX_BUNDLE
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
 )
 
-target_link_libraries(${RUNTIME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-set_target_properties(${RUNTIME} PROPERTIES
-        ${BUNDLE_ID_OPTION}
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        MACOSX_BUNDLE TRUE
-        WIN32_EXECUTABLE TRUE
-)
-
-
-
-target_link_libraries(${RUNTIME} PUBLIC Origin::common Origin::utils Origin::container Origin::logging)
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(${RUNTIME})
-endif()
+target_link_libraries(${RUNTIME} PRIVATE Qt::Core Qt::Widgets)
+target_link_libraries(${RUNTIME} PRIVATE Origin::common Origin::utils Origin::container Origin::logging)
 
 if (WIN32)
-    file(GLOB LIBS "${ORIGIN_BIN_DIR}/*.dll")
-
-    add_custom_command(TARGET ${RUNTIME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${LIBS}
-        $<TARGET_FILE_DIR:${RUNTIME}>
-        COMMAND_EXPAND_LISTS
-        COMMENT "Copy ${ORIGIN_LIBS}."
-        VERBATIM
-    )
     add_custom_command(TARGET ${RUNTIME} POST_BUILD
-        COMMAND Qt6::windeployqt $<TARGET_FILE:Timer>
+        COMMAND Qt6::windeployqt $<TARGET_FILE:${RUNTIME}>
         COMMENT "Run windeployqt to copy Qt dlls"
     )
-    install(DIRECTORY ${ORIGIN_BIN_DIR}/ DESTINATION bin)
 endif()
 
+deploy_origin_post_build(${RUNTIME})
+include(GNUInstallDirs)          # 关键：让 CMAKE_INSTALL_BINDIR 有定义
+install_origin(bin)
+
 install(TARGETS ${RUNTIME}
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+
+qt_generate_deploy_app_script(
+    TARGET ${RUNTIME}
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

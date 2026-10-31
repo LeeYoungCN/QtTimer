@@ -1,51 +1,63 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <origin/common/types/date_time_types.h>
+#include <memory>
+
+#include <QLocale>
+#include <QMainWindow>
+#include <qobject.h>
 #include <qobjectdefs.h>
+#include <qpoint.h>
 #include <qpushbutton.h>
 #include <qtconfigmacros.h>
 #include <qtmetamacros.h>
 #include <qwidget.h>
 
-#include <QLocale>
-#include <QMainWindow>
-#include <cstdint>
-#include <memory>
+#include <origin/common/types/date_time_types.h>
 #include <origin/logging/loggers/logger.hpp>
 
+
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
+    namespace Ui {
+    class MainWindow;
+    }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
-private slots:
-    void on_time_button_clicked();
-    void update_button();
-    void heart_timer_timeout();
+protected:
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-    QLocale m_loc = QLocale(QLocale::Chinese, QLocale::China);
-    TimestampMs m_prevTime{0};
+    void setupUi();
+    void setTimer();
+    void updateLabel();
+
+private slots:
+    void updateTimerTimeout();
+    void heartbeatTimerTimeout();
+    void onCustomContextMenuRequested(const QPoint& pos);
+
+private:
     std::shared_ptr<origin::logging::Logger> m_logger{nullptr};
+    TimestampMs m_prevTime{0};
 
-    QPushButton *m_dateButton;
-    QPushButton *m_timeButton;
+    QWidget* m_card{nullptr};
+    QLabel* m_labelDate{nullptr};
+    QLabel* m_labelTime{nullptr};
+    QLabel* m_line{nullptr};
 
-    QTimer *m_heartTimer;
-    int32_t m_refreshInterval{100};
+    QTimer* m_heartbeatTimer{nullptr};
+    QTimer* m_updateTimer{nullptr};
 
-    QTimer *m_updateTimer;
-    int32_t m_heartInterval{10000};
-
-    bool m_flag{true};
+    QPoint m_offset;
+    bool m_dragging = false;
 };
 #endif  // MAINWINDOW_H
