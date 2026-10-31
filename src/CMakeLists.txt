@@ -19,7 +19,7 @@ qt_add_executable(${RUNTIME}
 )
 
 target_link_libraries(${RUNTIME} PRIVATE Qt::Core Qt::Widgets)
-target_link_libraries(${RUNTIME} PRIVATE Origin::common Origin::utils Origin::container Origin::logging)
+target_link_libraries(${RUNTIME} PRIVATE Origin::Common Origin::Utils Origin::Container Origin::Logging)
 
 if (WIN32)
     add_custom_command(TARGET ${RUNTIME} POST_BUILD
