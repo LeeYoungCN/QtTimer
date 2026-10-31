@@ -1,6 +1,22 @@
 ---
+# clang-tidy 配置（Qt Widgets 桌面项目）
+#
+# 结构约定：
+#   1. Checks 用 "-*,<白名单>"，负项统一放在列表末尾。clang-tidy 的 glob 是
+#      从左到右覆盖的，负项夹在中间时，后面任何能匹配上的条目都会把它重新打开。
+#      注意：在 -* 白名单模式下，负项其实冗余，保留只是为了把意图写清楚。
+#   2. CheckOptions 只保留 Checks 里真实启用的 check 的选项。上一版有 12 个
+#      check 的选项是写给未启用 check 的（cert-err33-c、cert-arr39-c、
+#      google-readability-*、llvm-*、readability-identifier-*），不会生效，已删除。
+#   3. HeaderFilterRegex 为空 = 只查主文件。这里改为检查项目头文件，
+#      用 ExcludeHeaderFilterRegex 排掉第三方与构建产物。
+#   4. WarningsAsErrors 留空，CI 用命令行 --warnings-as-errors='*' 覆盖，
+#      这样本地编辑器不会把所有 warning 变红。
+#   5. 静态分析不在本文件：CI 单独跑 clang-tidy -checks='-*,clang-analyzer-*'。
+#      clang-analyzer-* 很慢，放进这份文件会拖垮 clangd 的实时检查。
+
 Checks: >
-  -* ,
+  -*,
   bugprone-argument-comment,
   bugprone-assert-side-effect,
   bugprone-bad-signal-to-kill-thread,
@@ -60,7 +76,6 @@ Checks: >
   cert-msc50-cpp,
   cert-msc51-cpp,
   cert-str34-c,
-  clang-diagnostic-unused-include,
   cppcoreguidelines-avoid-nested-locks,
   cppcoreguidelines-holding-a-lock,
   cppcoreguidelines-interfaces-global-init,
@@ -75,6 +90,7 @@ Checks: >
   hicpp-exception-baseclass,
   hicpp-multiway-paths-covered,
   misc-const-correctness,
+  misc-include-cleaner,
   misc-misplaced-const,
   misc-new-delete-overloads,
   misc-no-recursion,
@@ -110,9 +126,6 @@ Checks: >
   modernize-use-override,
   modernize-use-transparent-functors,
   modernize-use-uncaught-exceptions,
-  mpi-buffer-deref,
-  mpi-type-mismatch,
-  openmp-use-default-none,
   performance-faster-string-find,
   performance-for-range-copy,
   performance-implicit-conversion-in-loop,
@@ -127,10 +140,8 @@ Checks: >
   performance-type-promotion-in-math-fn,
   performance-unnecessary-copy-initialization,
   performance-unnecessary-value-param,
-  portability-simd-intrinsics,
-  -readability-avoid-const-params-in-decls,
-  readability-const-return-type,
   readability-braces-around-statements,
+  readability-const-return-type,
   readability-container-size-empty,
   readability-delete-null-pointer,
   readability-deleted-default,
@@ -152,24 +163,24 @@ Checks: >
   readability-string-compare,
   readability-uniqueptr-delete-release,
   readability-use-anyofallof,
+  -readability-avoid-const-params-in-decls,
 
 WarningsAsErrors: ''
 HeaderFileExtensions:
-
-- ''
-- h
-- hh
-- hpp
-- hxx
+  - h
+  - hh
+  - hpp
+  - hxx
 ImplementationFileExtensions:
-- c
-- cc
-- cpp
-- cxx
-HeaderFilterRegex: ''
-ExcludeHeaderFilterRegex: ''
+  - c
+  - cc
+  - cpp
+  - cxx
+HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: '.*(thirdparty|build|out|origin)/.*'
+SystemHeaders: false
 FormatStyle: file
-User: a1175
+
 CheckOptions:
   bugprone-argument-comment.CommentBoolLiterals: '0'
   bugprone-argument-comment.CommentCharacterLiterals: '0'
@@ -211,17 +222,7 @@ CheckOptions:
   bugprone-unused-return-value.AllowCastToVoid: 'false'
   bugprone-unused-return-value.CheckedFunctions: '^::std::async$;^::std::launder$;^::std::remove$;^::std::remove_if$;^::std::unique$;^::std::unique_ptr::release$;^::std::basic_string::empty$;^::std::vector::empty$;^::std::back_inserter$;^::std::distance$;^::std::find$;^::std::find_if$;^::std::inserter$;^::std::lower_bound$;^::std::make_pair$;^::std::map::count$;^::std::map::find$;^::std::map::lower_bound$;^::std::multimap::equal_range$;^::std::multimap::upper_bound$;^::std::set::count$;^::std::set::find$;^::std::setfill$;^::std::setprecision$;^::std::setw$;^::std::upper_bound$;^::std::vector::at$;^::bsearch$;^::ferror$;^::feof$;^::isalnum$;^::isalpha$;^::isblank$;^::iscntrl$;^::isdigit$;^::isgraph$;^::islower$;^::isprint$;^::ispunct$;^::isspace$;^::isupper$;^::iswalnum$;^::iswprint$;^::iswspace$;^::isxdigit$;^::memchr$;^::memcmp$;^::strcmp$;^::strcoll$;^::strncmp$;^::strpbrk$;^::strrchr$;^::strspn$;^::strstr$;^::wcscmp$;^::access$;^::bind$;^::connect$;^::difftime$;^::dlsym$;^::fnmatch$;^::getaddrinfo$;^::getopt$;^::htonl$;^::htons$;^::iconv_open$;^::inet_addr$;^::isascii$;^::isatty$;^::mmap$;^::newlocale$;^::openat$;^::pathconf$;^::pthread_equal$;^::pthread_getspecific$;^::pthread_mutex_trylock$;^::readdir$;^::readlink$;^::recvmsg$;^::regexec$;^::scandir$;^::semget$;^::setjmp$;^::shm_open$;^::shmget$;^::sigismember$;^::strcasecmp$;^::strsignal$;^::ttyname$'
   bugprone-unused-return-value.CheckedReturnTypes: '^::std::error_code$;^::std::error_condition$;^::std::errc$;^::std::expected$;^::boost::system::error_code$'
-  cert-arr39-c.WarnOnSizeOfCompareToConstant: 'false'
-  cert-arr39-c.WarnOnSizeOfConstant: 'false'
-  cert-arr39-c.WarnOnSizeOfIntegerExpression: 'false'
-  cert-arr39-c.WarnOnSizeOfPointer: 'false'
-  cert-arr39-c.WarnOnSizeOfPointerToAggregate: 'false'
-  cert-arr39-c.WarnOnSizeOfThis: 'false'
-  cert-dcl16-c.NewSuffixes: 'L;LL;LU;LLU'
-  cert-err33-c.AllowCastToVoid: 'true'
-  cert-err33-c.CheckedFunctions: '^::aligned_alloc;^::asctime_s;^::at_quick_exit;^::atexit;^::bsearch;^::bsearch_s;^::btowc;^::c16rtomb;^::c32rtomb;^::calloc;^::clock;^::cnd_broadcast;^::cnd_init;^::cnd_signal;^::cnd_timedwait;^::cnd_wait;^::ctime_s;^::fclose;^::fflush;^::fgetc;^::fgetpos;^::fgets;^::fgetwc;^::fopen;^::fopen_s;^::fprintf;^::fprintf_s;^::fputc;^::fputs;^::fputwc;^::fputws;^::fread;^::freopen;^::freopen_s;^::fscanf;^::fscanf_s;^::fseek;^::fsetpos;^::ftell;^::fwprintf;^::fwprintf_s;^::fwrite;^::fwscanf;^::fwscanf_s;^::getc;^::getchar;^::getenv;^::getenv_s;^::gets_s;^::getwc;^::getwchar;^::gmtime;^::gmtime_s;^::localtime;^::localtime_s;^::malloc;^::mbrtoc16;^::mbrtoc32;^::mbsrtowcs;^::mbsrtowcs_s;^::mbstowcs;^::mbstowcs_s;^::memchr;^::mktime;^::mtx_init;^::mtx_lock;^::mtx_timedlock;^::mtx_trylock;^::mtx_unlock;^::printf_s;^::putc;^::putwc;^::raise;^::realloc;^::remove;^::rename;^::scanf;^::scanf_s;^::setlocale;^::setvbuf;^::signal;^::snprintf;^::snprintf_s;^::sprintf;^::sprintf_s;^::sscanf;^::sscanf_s;^::strchr;^::strerror_s;^::strftime;^::strpbrk;^::strrchr;^::strstr;^::strtod;^::strtof;^::strtoimax;^::strtok;^::strtok_s;^::strtol;^::strtold;^::strtoll;^::strtoul;^::strtoull;^::strtoumax;^::strxfrm;^::swprintf;^::swprintf_s;^::swscanf;^::swscanf_s;^::thrd_create;^::thrd_detach;^::thrd_join;^::thrd_sleep;^::time;^::timespec_get;^::tmpfile;^::tmpfile_s;^::tmpnam;^::tmpnam_s;^::tss_create;^::tss_get;^::tss_set;^::ungetc;^::ungetwc;^::vfprintf;^::vfprintf_s;^::vfscanf;^::vfscanf_s;^::vfwprintf;^::vfwprintf_s;^::vfwscanf;^::vfwscanf_s;^::vprintf_s;^::vscanf;^::vscanf_s;^::vsnprintf;^::vsnprintf_s;^::vsprintf;^::vsprintf_s;^::vsscanf;^::vsscanf_s;^::vswprintf;^::vswprintf_s;^::vswscanf;^::vswscanf_s;^::vwprintf_s;^::vwscanf;^::vwscanf_s;^::wcrtomb;^::wcschr;^::wcsftime;^::wcspbrk;^::wcsrchr;^::wcsrtombs;^::wcsrtombs_s;^::wcsstr;^::wcstod;^::wcstof;^::wcstoimax;^::wcstok;^::wcstok_s;^::wcstol;^::wcstold;^::wcstoll;^::wcstombs;^::wcstombs_s;^::wcstoul;^::wcstoull;^::wcstoumax;^::wcsxfrm;^::wctob;^::wctrans;^::wctype;^::wmemchr;^::wprintf_s;^::wscanf;^::wscanf_s;'
   cert-msc51-cpp.DisallowedSeedTypes: 'time_t,std::time_t'
-  cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField: 'false'
   cert-str34-c.CharTypdefsToIgnore: ''
   cert-str34-c.DiagnoseSignedUnsignedCharComparisons: 'false'
   cppcoreguidelines-narrowing-conversions.IgnoreConversionFromTypes: ''
@@ -231,18 +232,10 @@ CheckOptions:
   cppcoreguidelines-narrowing-conversions.WarnOnIntegerNarrowingConversion: 'true'
   cppcoreguidelines-narrowing-conversions.WarnOnIntegerToFloatingPointNarrowingConversion: 'true'
   cppcoreguidelines-narrowing-conversions.WarnWithinTemplateInstantiation: 'false'
-  cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic: 'true'
   cppcoreguidelines-pro-type-member-init.IgnoreArrays: 'false'
   cppcoreguidelines-pro-type-member-init.UseAssignment: 'false'
   cppcoreguidelines-pro-type-static-cast-downcast.StrictMode: 'true'
-  google-readability-braces-around-statements.ShortStatementLines: '1'
-  google-readability-function-size.StatementThreshold: '800'
-  google-readability-namespace-comments.ShortNamespaceLines: '10'
-  google-readability-namespace-comments.SpacesBeforeComments: '2'
   hicpp-multiway-paths-covered.WarnOnMissingElse: 'false'
-  llvm-else-after-return.WarnOnConditionVariables: 'false'
-  llvm-else-after-return.WarnOnUnfixable: 'false'
-  llvm-qualified-auto.AddConstToQualified: 'false'
   misc-const-correctness.AnalyzeReferences: 'true'
   misc-const-correctness.AnalyzeValues: 'true'
   misc-const-correctness.AnalyzeValueParameters: 'true'
@@ -320,9 +313,6 @@ CheckOptions:
   performance-unnecessary-copy-initialization.ExcludedContainerTypes: ''
   performance-unnecessary-value-param.AllowedTypes: ''
   performance-unnecessary-value-param.IncludeStyle: llvm
-  portability-simd-intrinsics.Std: ''
-  portability-simd-intrinsics.Suggest: 'false'
-  readability-avoid-const-params-in-decls.IgnoreMacros: 'true'
   readability-const-return-type.IgnoreMacros: 'true'
   readability-container-size-empty.ExcludedComparisonTypes: '::std::array'
   readability-inconsistent-declaration-parameter-name.IgnoreMacros: 'true'
@@ -341,6 +331,4 @@ CheckOptions:
   readability-static-accessed-through-instance.NameSpecifierNestingThreshold: '3'
   readability-string-compare.StringLikeClasses: '::std::basic_string;::std::basic_string_view'
   readability-uniqueptr-delete-release.PreferResetCall: 'false'
-  readability-identifier-length.IgnoredVariableNames: '^(i|j|k|s|it|err|tmp|id|ok|fd|res|dp)$'
-  readability-identifier-naming.GlobalConstantCase: 'UPPER_CASE'
-SystemHeaders: false
+...

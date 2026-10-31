@@ -1,47 +1,32 @@
 # .clangd
 CompileFlags:
-  CompilationDatabase: out/build
+  CompilationDatabase: out/build      # 确认该目录下直接有 compile_commands.json
 
-# 代码自动补全
 Completion:
   AllScopes: Yes
   ArgumentLists: FullPlaceholders
-  IncludeHeuristics: Auto   # 新增：输入符号自动推荐#include头文件
-  AddUsing: No              # 新增：补全不自动插入using，工程代码推荐关闭
+  HeaderInsertion: IWYU               # 补全时按 IWYU 自动补齐所属头（原来是无效键）
 
-# 全局符号索引（跳转、查找引用）
 Index:
   Background: Build
-  StandardLibrary: true
-  Exclude:                  # 新增：跳过构建产物、第三方库，降低索引压力
-    - out/
-    - build/
-    - thirdparty/
-  MemoryBudget: 4G       # 大项目源码很多时打开，限制索引内存占用
 
-# 内联提示
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: None
+  ClangTidy:
+    Add: []
+    Remove:
+      - misc-include-cleaner     # 编辑器用 clangd 自带 Include Cleaner，CI 用 clang-tidy 的
+    FastCheckFilter: Loose
+
 InlayHints:
   Enabled: true
   BlockEnd: false
-  Designators: true         # 聚合初始化 .key=value 提示
-  ParameterNames: true      # 函数参数名提示 func(param: val)
-  DeducedTypes: true        # auto 推导类型提示
+  Designators: true
+  ParameterNames: true
+  DeducedTypes: true
   DefaultArguments: true
   TypeNameLimit: 24
 
-# 诊断 & ClangTidy 集成
-Diagnostics:
-  UnusedIncludes: Strict
-  MissingIncludes: Strict
-  ClangTidy:
-    FastCheckFilter: None
-    # 【重要】Add/Remove清空，规则全权交给 .clang-tidy 统一管理
-    # 防止本地IDE和CI流水线检查规则不一致
-    Add: []
-    Remove: []
-
-# 悬浮预览
 Hover:
   ShowAKA: true
-  ShowDocumentation: true
-  ShowType: true            # 新增：悬浮查看表达式类型

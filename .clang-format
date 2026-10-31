@@ -99,7 +99,7 @@ AttributeMacros:
 # false表示函数实参要么都在同一行，要么都各自一行
 BinPackArguments: false
 # false表示所有形参要么都在同一行，要么都各自一行
-BinPackParameters: BinPack
+BinPackParameters: false
 BitFieldColonSpacing: Both
 # 大括号换行，只有当BreakBeforeBraces设置为Custom时才有效
 BraceWrapping:
@@ -144,7 +144,7 @@ CompactNamespaces: false
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
-DerivePointerAlignment: true
+DerivePointerAlignment: false
 DisableFormat:   false
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: LogicalBlock
@@ -157,20 +157,41 @@ ForEachMacros:
 IfMacros:
   - KJ_IF_MAYBE
 IncludeBlocks:   Regroup
+# ---------------------------------------------------------------------------
+# include 排序策略
+#   列表顺序 = 正则匹配顺序（先匹配先生效），Priority = 分块顺序
+#   0 本文件主头（clang-format 自动识别，无需规则）
+#   1 windows.h
+#   2 C 系统头（.h）
+#   3 C++ 标准库
+#   4 Qt
+#   5 origin 框架
+#   6 项目本地 "..."
+# 规则顺序不能随 Priority 排：Qt 小写头、origin 头都带 .h，
+# 必须排在通用的 ^<.+\.h>$ 之前，否则会被当成系统头。
+# ---------------------------------------------------------------------------
 IncludeCategories:
-  # 1. windows.h 最高优先级，负数，放在最前面
-  - Regex: '^<windows\.h>$'
-    Priority: -1
-    CaseSensitive: false
+  # 1. windows.h 最高优先级，放在最前面
+  - Regex: '^<[Ww]indows\.h>$'
+    Priority: 1
+  # 4. Qt（CamelCase <QWidget>、模块路径 <QtWidgets/QWidget>）
+  - Regex: '^<(Qt[A-Za-z]+/)?Q[A-Z][^>]*>$'
+    Priority: 4
+  # 4. Qt 小写头（IDE 自动补全的 qlocale.h / qwidget.h 之类）
+  - Regex: '^<(Qt[A-Za-z]+/)?q[a-z0-9_]+\.h>$'
+    Priority: 4
+  # 5. origin 框架（尖括号、引号两种写法都兼容）
+  - Regex: '^[<"]origin/'
+    Priority: 5
   # 2. 其它系统头文件（C标准库、其它win sdk头 winuser.h等）
   - Regex: '^<.+\.h>$'
     Priority: 2
   # 3. C++标准库头文件 <string> <iostream>
   - Regex: '^<.+>$'
     Priority: 3
-  # 4. 项目本地头文件 "xxx.h"
+  # 6. 项目本地头文件 "xxx.h"
   - Regex: '^".+"$'
-    Priority: 4
+    Priority: 6
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IncludeIsMainSourceRegex: ''
 # 缩进访问控制
@@ -204,8 +225,8 @@ KeepEmptyLines:
 KeepFormFeed:    false
 LambdaBodyIndentation: Signature
 LineEnding:      DeriveLF
-MacroBlockBegin: ''
-MacroBlockEnd:   ''
+MacroBlockBegin: 'QT_BEGIN_NAMESPACE'
+MacroBlockEnd:   'QT_END_NAMESPACE'
 MainIncludeChar: Quote
 MaxEmptyLinesToKeep: 1 # 最大空行
 NamespaceIndentation: None
@@ -227,7 +248,7 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyIndentedWhitespace: 0
 PenaltyReturnTypeOnItsOwnLine: 200
-PointerAlignment: Right
+PointerAlignment: Left
 PPIndentWidth:   -1
 QualifierAlignment: Leave
 RawStringFormats:
@@ -331,4 +352,3 @@ WhitespaceSensitiveMacros:
   - STRINGIZE
 WrapNamespaceBodyWithEmptyLines: Leave
 ...
-
