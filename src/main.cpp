@@ -1,8 +1,4 @@
 #include <QApplication>
-#include <QLocale>
-#include <QTranslator>
-#include <qcontainerfwd.h>
-#include <qcoreapplication.h>
 
 #include <origin/common/debug/debug_logger.h>
 #include <origin/logging/log_level.hpp>

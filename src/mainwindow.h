@@ -3,24 +3,16 @@
 
 #include <memory>
 
-#include <QLocale>
+#include <QLabel>
 #include <QMainWindow>
-#include <qobject.h>
-#include <qobjectdefs.h>
-#include <qpoint.h>
-#include <qpushbutton.h>
-#include <qtconfigmacros.h>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QTimer>
+#include <QWidget>
 #include <qtmetamacros.h>
-#include <qwidget.h>
 
 #include <origin/common/types/date_time_types.h>
 #include <origin/logging/loggers/logger.hpp>
-
-QT_BEGIN_NAMESPACE
-    namespace Ui {
-    class MainWindow;
-    }
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
