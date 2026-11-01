@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <cstdint>
+#include <string>
 
 #include <QColor>
 #include <QDateTime>
@@ -18,7 +19,6 @@
 #include <origin/logging/log_source.hpp>
 #include <origin/logging/logging.hpp>
 #include <origin/utils/date_time_utils.h>
-
 
 using namespace origin;
 
@@ -223,11 +223,10 @@ void MainWindow::updateTimerTimeout()
     updateLabel();
 }
 
-void MainWindow::heartbeatTimerTimeout()
+void MainWindow::appendInterval(const DurationMs duration, std::string& logContent)
 {
-    const TimestampMs now = date_time::get_now_timestamp_ms();
+    std::string_view prefix = logContent.empty() ? "" : " ";
 
-    const DurationMs duration = date_time::diff_timestamp(now, m_prevTime);
     int64_t rem = duration;
     const int64_t days = rem / date_time::MILLIS_PER_DAY;
     rem = rem % date_time::MILLIS_PER_DAY;
@@ -239,20 +238,53 @@ void MainWindow::heartbeatTimerTimeout()
     const int64_t millis = rem % date_time::MILLIS_PER_SEC;
 
     if (days > 0) {
-        m_logger->info(LOG_SRC_LOCAL,
-                       "Timeout. Interval: [{}-{:02}:{:02}:{:02}.{:03}]",
+        std::format_to(std::back_inserter(logContent),
+                       "{}Interval: [{}-{:02}:{:02}:{:02}.{:03}].",
+                       prefix,
                        days,
                        hours,
                        minutes,
                        seconds,
                        millis);
     } else {
-        m_logger->info(LOG_SRC_LOCAL,
-                       "Timeout. Interval: [{:02}:{:02}:{:02}.{:03}]",
+        std::format_to(std::back_inserter(logContent),
+                       "{}Interval: [{:02}:{:02}:{:02}.{:03}].",
+                       prefix,
                        hours,
                        minutes,
                        seconds,
                        millis);
     }
+}
+
+void MainWindow::appendTimeSpan(const TimestampMs start,
+                                const TimestampMs end,
+                                std::string& logContent)
+{
+    std::string_view TIME_STRING_FMT = "%Y-%m-%d %H:%M:%S.%3f";
+    std::string_view prefix = logContent.empty() ? "" : " ";
+    std::format_to(std::back_inserter(logContent),
+                   "{}Time span: [{}, {}].",
+                   prefix,
+                   date_time::format_time_string(start, TIME_STRING_FMT),
+                   date_time::format_time_string(end, TIME_STRING_FMT));
+}
+
+void MainWindow::heartbeatTimerTimeout()
+{
+    const TimestampMs now = date_time::get_now_timestamp_ms();
+    const DurationMs interval = date_time::diff_timestamp(now, m_prevTime);
+
+    std::string logContent;
+    appendInterval(interval, logContent);
+
+    if (interval >= 2 * HEARTBEAT_INTERVAL_MS) {
+        appendTimeSpan(m_prevTime, now, logContent);
+        m_logger->warn(LOG_SRC_LOCAL, logContent);
+        logging::warn(LOG_SRC_LOCAL, logContent);
+    } else {
+        m_logger->info(LOG_SRC_LOCAL, logContent);
+    }
+
     m_prevTime = now;
 }

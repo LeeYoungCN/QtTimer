@@ -26,15 +26,18 @@ int main(int argc, char* argv[])
     const auto heartbeatLogFile = filesystem::join_paths({logDir, "Heartbeat.log"});
 
     const auto runLogger = logging::create_logger<logging::SyncLogger, logging::RotatingFileSink>(
-        "Timer", runLogFile, 100 * 1024, 5, false);
+        "Timer", runLogFile, 10 * 1024, 5, false);
     runLogger->flush_on(logging::LogLevel::INFO);
     logging::set_root_logger(runLogger);
 
     const auto heartLogger = logging::create_logger<logging::SyncLogger, logging::DailyFileSink>(
         "Heartbeat", heartbeatLogFile, false);
     heartLogger->flush_on(logging::LogLevel::INFO);
-    logging::register_logger(heartLogger);
 
+    logging::register_logger(heartLogger);
+    logging::set_pattern_all("[%d][%l][Pid: %P]: %v");
+
+    info(LOG_SRC_LOCAL, "Working directory: \"{}\"", filesystem::get_curr_working_dir());
     info(LOG_SRC_LOCAL, "Process: \"{}\"", process::get_proc_path());
     info(LOG_SRC_LOCAL, "Log directory: \"{}\"", logDir);
     info(LOG_SRC_LOCAL, "Run log: \"{}\"", runLogFile);

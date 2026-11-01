@@ -16,7 +16,6 @@
 #include <origin/common/types/date_time_types.h>
 #include <origin/logging/loggers/logger.hpp>
 
-
 QT_BEGIN_NAMESPACE
     namespace Ui {
     class MainWindow;
@@ -39,6 +38,10 @@ private:
     void setupUi();
     void setTimer();
     void updateLabel();
+    static void appendTimeSpan(const TimestampMs start,
+                               const TimestampMs end,
+                               std::string& logContent);
+    static void appendInterval(const DurationMs duration, std::string& logContent);
 
 private slots:
     void updateTimerTimeout();
