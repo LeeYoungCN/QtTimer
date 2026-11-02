@@ -30,10 +30,8 @@ private:
     void setupUi();
     void setTimer();
     void updateLabel();
-    static void appendTimeSpan(const TimestampMs start,
-                               const TimestampMs end,
-                               std::string& logContent);
-    static void appendInterval(const DurationMs duration, std::string& logContent);
+    static std::string formatTimeSpan(const TimestampMs start, const TimestampMs end);
+    static std::string formatInterval(const DurationMs duration);
 
 private slots:
     void updateTimerTimeout();

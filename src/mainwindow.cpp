@@ -223,10 +223,8 @@ void MainWindow::updateTimerTimeout()
     updateLabel();
 }
 
-void MainWindow::appendInterval(const DurationMs duration, std::string& logContent)
+std::string MainWindow::formatInterval(const DurationMs duration)
 {
-    std::string_view prefix = logContent.empty() ? "" : " ";
-
     int64_t rem = duration;
     const int64_t days = rem / date_time::MILLIS_PER_DAY;
     rem = rem % date_time::MILLIS_PER_DAY;
@@ -238,36 +236,18 @@ void MainWindow::appendInterval(const DurationMs duration, std::string& logConte
     const int64_t millis = rem % date_time::MILLIS_PER_SEC;
 
     if (days > 0) {
-        std::format_to(std::back_inserter(logContent),
-                       "{}Interval: [{}-{:02}:{:02}:{:02}.{:03}].",
-                       prefix,
-                       days,
-                       hours,
-                       minutes,
-                       seconds,
-                       millis);
+        return std::format("[{}-{:02}:{:02}:{:02}.{:03}]", days, hours, minutes, seconds, millis);
     } else {
-        std::format_to(std::back_inserter(logContent),
-                       "{}Interval: [{:02}:{:02}:{:02}.{:03}].",
-                       prefix,
-                       hours,
-                       minutes,
-                       seconds,
-                       millis);
+        return std::format("[{:02}:{:02}:{:02}.{:03}]", hours, minutes, seconds, millis);
     }
 }
 
-void MainWindow::appendTimeSpan(const TimestampMs start,
-                                const TimestampMs end,
-                                std::string& logContent)
+std::string MainWindow::formatTimeSpan(const TimestampMs start, const TimestampMs end)
 {
     std::string_view TIME_STRING_FMT = "%Y-%m-%d %H:%M:%S.%3f";
-    std::string_view prefix = logContent.empty() ? "" : " ";
-    std::format_to(std::back_inserter(logContent),
-                   "{}Time span: [{}, {}].",
-                   prefix,
-                   date_time::format_time_string(start, TIME_STRING_FMT),
-                   date_time::format_time_string(end, TIME_STRING_FMT));
+    return std::format("[{}, {}]",
+                       date_time::format_time_string(start, TIME_STRING_FMT),
+                       date_time::format_time_string(end, TIME_STRING_FMT));
 }
 
 void MainWindow::heartbeatTimerTimeout()
@@ -275,15 +255,17 @@ void MainWindow::heartbeatTimerTimeout()
     const TimestampMs now = date_time::get_now_timestamp_ms();
     const DurationMs interval = date_time::diff_timestamp(now, m_prevTime);
 
-    std::string logContent;
-    appendInterval(interval, logContent);
+    const std::string intervalStr = formatInterval(interval);
+    const std::string heartbeatLog = std::format("Timer running. Interval: {}.", intervalStr);
 
     if (interval >= 2 * HEARTBEAT_INTERVAL_MS) {
-        appendTimeSpan(m_prevTime, now, logContent);
-        m_logger->warn(LOG_SRC_LOCAL, logContent);
-        logging::warn(LOG_SRC_LOCAL, logContent);
+        m_logger->warn(LOG_SRC_LOCAL, heartbeatLog);
+        logging::warn(LOG_SRC_LOCAL,
+                      "Time span: {}. Interval: {}.",
+                      intervalStr,
+                      formatTimeSpan(m_prevTime, now));
     } else {
-        m_logger->info(LOG_SRC_LOCAL, logContent);
+        m_logger->info(LOG_SRC_LOCAL, heartbeatLog);
     }
 
     m_prevTime = now;
