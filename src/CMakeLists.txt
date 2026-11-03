@@ -29,12 +29,12 @@ if (WIN32)
 endif()
 
 deploy_origin_post_build(${RUNTIME})
+
 include(GNUInstallDirs)          # 关键：让 CMAKE_INSTALL_BINDIR 有定义
-install_origin(bin)
+install_origin(${CMAKE_INSTALL_BINDIR})
 
 install(TARGETS ${RUNTIME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 qt_generate_deploy_app_script(

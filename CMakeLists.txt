@@ -86,4 +86,7 @@ endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/cmake_configure_info.cmake)
 
+string(TIMESTAMP BUILD_STAMP "%Y-%m-%d %H:%M:%S")
+add_compile_definitions(BUILD_STAMP="${BUILD_STAMP}")
+
 add_subdirectory(src)

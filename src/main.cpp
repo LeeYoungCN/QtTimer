@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
     logging::register_logger(heartLogger);
     logging::set_pattern_all("[%d][%l][Pid: %P]: %v");
 
+    info(LOG_SRC_LOCAL, "Build time: \"{}\"", BUILD_STAMP);
     info(LOG_SRC_LOCAL, "Working directory: \"{}\"", filesystem::get_curr_working_dir());
     info(LOG_SRC_LOCAL, "Process: \"{}\"", process::get_proc_path());
     info(LOG_SRC_LOCAL, "Log directory: \"{}\"", logDir);
