@@ -262,8 +262,8 @@ void MainWindow::heartbeatTimerTimeout()
         m_logger->warn(LOG_SRC_LOCAL, heartbeatLog);
         logging::warn(LOG_SRC_LOCAL,
                       "Time span: {}. Interval: {}.",
-                      intervalStr,
-                      formatTimeSpan(m_prevTime, now));
+                      formatTimeSpan(m_prevTime, now),
+                      intervalStr);
     } else {
         m_logger->info(LOG_SRC_LOCAL, heartbeatLog);
     }
