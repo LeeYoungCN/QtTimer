@@ -9,6 +9,7 @@
 #include <origin/logging/sinks/rotating_file_sink.hpp>
 #include <origin/utils/filesystem_utils.h>
 #include <origin/utils/process_utils.h>
+#include <origin/common/version.h>
 
 #include "mainwindow.h"
 
@@ -33,7 +34,9 @@ int main(int argc, char* argv[])
     logging::register_logger(heartLogger);
     logging::set_pattern_all("[%d][%l][Pid: %P]: %v");
 
-    info(LOG_SRC_LOCAL, "Build time: \"{}\"", BUILD_STAMP);
+    info(LOG_SRC_LOCAL, "Timer build time: \"{}\"", BUILD_STAMP);
+    info(LOG_SRC_LOCAL, "Origin version: \"{}\"", origin::version());
+    info(LOG_SRC_LOCAL, "Origin build time: \"{}\"", origin::build_time());
     info(LOG_SRC_LOCAL, "Working directory: \"{}\"", filesystem::get_curr_working_dir());
     info(LOG_SRC_LOCAL, "Process: \"{}\"", process::get_proc_path());
     info(LOG_SRC_LOCAL, "Log directory: \"{}\"", logDir);
