@@ -1,13 +1,7 @@
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_ORIGIN_PATH}")
-
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 find_package(Origin REQUIRED)
 
 set(RUNTIME Timer)
-
-set(QT_PATH "D:/ProgramFiles/Qt/6.12.0/msvc2022_64")
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PATH}")
-
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()
 

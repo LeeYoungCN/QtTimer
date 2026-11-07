@@ -28,8 +28,9 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS:                 ${CMAKE_EXE_LINKER_FLAGS
 message(STATUS "CMAKE_BINARY_DIR:                       ${CMAKE_BINARY_DIR}")
 message(STATUS "CMAKE_INSTALL_PREFIX:                   ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "CMAKE_THIRD_PARTY_PATH                  ${CMAKE_THIRD_PARTY_PATH}")
-message(STATUS "CMAKE_ORIGIN_PATH                       ${CMAKE_ORIGIN_PATH}")
-
+message(STATUS "ORIGIN_PATH:                            ${ORIGIN_PATH}")
+message(STATUS "QT_PATH:                                ${QT_PATH}")
+message(STATUS "BUILD_STAMP:                            ${BUILD_STAMP}")
 message(STATUS "CMAKE_SYSTEM_NAME:                      ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR:                 ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "CMAKE_SIZEOF_VOID_P:                    ${CMAKE_SIZEOF_VOID_P}")
