@@ -51,6 +51,7 @@
         },
         {
             "name": "msvc_x86_debug",
+            "hidden": true,
             "displayName": "MSVC x86 Debug Configure",
             "inherits": "msvc_base",
             "architecture": {
@@ -63,6 +64,7 @@
         },
         {
             "name": "msvc_x86_release",
+            "hidden": true,
             "displayName": "MSVC x86 Release Configure",
             "inherits": "msvc_x86_debug",
             "cacheVariables": {
@@ -337,6 +339,7 @@
         },
         {
             "name": "msvc_x86_debug_build",
+            "hidden": true,
             "configurePreset": "msvc_x86_debug",
             "displayName": "MSVC x86 Debug Build",
             "description": "Build the MSVC x86 Debug target.",
@@ -346,6 +349,7 @@
         },
         {
             "name": "msvc_x86_release_build",
+            "hidden": true,
             "configurePreset": "msvc_x86_release",
             "displayName": "MSVC x86 Release Build",
             "description": "Build the MSVC x86 Release target.",
@@ -551,6 +555,7 @@
         },
         {
             "name": "msvc_x86_debug_ctest",
+            "hidden": true,
             "displayName": "MSVC x86 Debug Ctest",
             "description": "Test the MSVC x86 Debug target.",
             "configurePreset": "msvc_x86_debug",
@@ -560,6 +565,7 @@
         },
         {
             "name": "msvc_x86_release_ctest",
+            "hidden": true,
             "displayName": "MSVC x86 Release Configure",
             "description": "Test the MSVC x86 Release target.",
             "configurePreset": "msvc_x86_release",
@@ -868,44 +874,6 @@
                 {
                     "type": "test",
                     "name": "msvc_x64_release_ctest"
-                }
-            ]
-        },
-        {
-            "name": "msvc_x86_debug_workflow",
-            "description": "MSVC x86 Debug Workflow",
-            "displayName": "MSVC x86 Debug Workflow",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "msvc_x86_debug"
-                },
-                {
-                    "type": "build",
-                    "name": "msvc_x86_debug_build"
-                },
-                {
-                    "type": "test",
-                    "name": "msvc_x86_debug_ctest"
-                }
-            ]
-        },
-        {
-            "name": "msvc_x86_release_workflow",
-            "description": "MSVC x86 Release Workflow",
-            "displayName": "MSVC x86 Release Workflow",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "msvc_x86_release"
-                },
-                {
-                    "type": "build",
-                    "name": "msvc_x86_release_build"
-                },
-                {
-                    "type": "test",
-                    "name": "msvc_x86_release_ctest"
                 }
             ]
         },
